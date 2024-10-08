@@ -4,10 +4,16 @@ class DBController
 {
 
     //properties
+    // protected $host = '	sql200.infinityfree.com';
+    // protected $user = 'if0_37044196';
+    // protected $password = 'Storenow100';
+    // protected $database = 'if0_37044196_ecomm';
+    // public $con = null;
+    
     protected $host = 'localhost';
     protected $user = 'root';
     protected $password = '';
-    protected $database = 'ecomm';
+    protected $database = 'ecomm_store';
     public $con = null;
 
     //constructor to open connection
