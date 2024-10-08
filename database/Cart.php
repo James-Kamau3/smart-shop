@@ -58,7 +58,7 @@ class Cart
             $result = $this->db->con->query("DELETE FROM {$table} WHERE item_id = {$item_id}");
 
             if ($result) {
-                header("Location:" . $_SERVER['PHP_SELF']);
+                header("Location: " . $_SERVER['PHP_SELF']);
             }
             return $result;
         }
@@ -77,17 +77,27 @@ class Cart
 
     //insert to wishlist
     public function saveForLater($item_id = null, $saveTo = 'wishlist', $removeFrom = 'cart')
-    {
-        if ($item_id != null) {
-            $query = "INSERT INTO {$saveTo} SELECT * FROM {$removeFrom} WHERE item_id ={$item_id};";
-            $query .= "DELETE FROM {$removeFrom} WHERE item_id ={$item_id};";
+{
+    if ($item_id != null) {
+        // Escaping table names and item_id to avoid SQL injection risks
+        $saveTo = $this->db->con->real_escape_string($saveTo);
+        $removeFrom = $this->db->con->real_escape_string($removeFrom);
+        $item_id = (int) $item_id; // Cast item_id to an integer for safety
 
-            $result = $this->db->con->multi_query($query);
+        $query = "INSERT INTO {$saveTo} SELECT * FROM {$removeFrom} WHERE item_id = {$item_id};";
+        $query .= "DELETE FROM {$removeFrom} WHERE item_id = {$item_id};";
 
-            if ($result) {
-                header("Location :" . $_SERVER['PHP_SELF']);
-            }
-            return $result;
+        $result = $this->db->con->multi_query($query);
+
+        if ($result) {
+            // Fixed the header redirection syntax
+            header("Location: " . $_SERVER['PHP_SELF']);
+            exit(); // Ensure no further execution after redirection
         }
+        return $result;
     }
+
+    return false; // Return false if no item_id was provided
+}
+
 }
